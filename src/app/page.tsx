@@ -82,7 +82,7 @@ const Home = () => {
     (async () => {
       await getAllPosts()
     })()
-    console.log(process.env.NEXT_PUBLIC_API_URL_DEV, "==>");
+    console.log(process.env.NEXT_PUBLIC_API_URL, "==>");
   }, [])
   const addPost = async () => {
     if (!accessToken) {
