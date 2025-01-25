@@ -27,7 +27,9 @@ interface singlePost {
   content: string;
   createdAt: string;
   updatedAt: string;
-  media: string;
+  media: {
+    url: string
+};
   likes: any[];
   comments: any[];
   __v: number;

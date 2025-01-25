@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from './ui/button';
 import Like from "@/assets/like.png"
 import Comment from "@/assets/chat.png"
@@ -23,7 +24,9 @@ interface Card {
         content: string;
         createdAt: string;
         updatedAt: string;
-        media: string;
+        media: {
+            url: string,
+        };
         likes: any[];
         comments: any[];
         __v: number;
@@ -31,6 +34,7 @@ interface Card {
     likePost: (id: string, index: number) => void;
     commentOnPost: (id: string, index: number) => void;
     setCommentText: (value: string) => void;
+    deletePost?: (id: string, index: number) => void;
     index: number;
     showDelete: boolean;
 }
@@ -47,7 +51,7 @@ interface userState {
     }
 }
 
-const Card = ({ item, index, likePost, commentOnPost, setCommentText,showDelete }: Card) => {
+const Card = ({ item, index, likePost, commentOnPost,deletePost, setCommentText, showDelete }: Card) => {
     const user = useSelector((state: userState) => state.user.user);
     const [showModal, setShowModal] = useState(false);
     const calculateDays = () => {
@@ -85,7 +89,7 @@ const Card = ({ item, index, likePost, commentOnPost, setCommentText,showDelete 
         }
         return `${diffInHours} hrs ago`
     }
-    const calculateCommentDays = (createdAt:string) => {
+    const calculateCommentDays = (createdAt: string) => {
         const createdDate = new Date(createdAt);
         const now = Date.now();
         const diffInMs = now - createdDate.getTime();
@@ -125,7 +129,7 @@ const Card = ({ item, index, likePost, commentOnPost, setCommentText,showDelete 
             <div className='flex gap-x-3 relative mb-3 justify-start items-center'>
                 <div>
                     <Avatar className='w-9 h-9'>
-                    <AvatarImage src={item.userId.profilePicture.url} alt={`@${item.userId.userName}`} />
+                        <AvatarImage src={item.userId.profilePicture.url} alt={`@${item.userId.userName}`} />
                         <AvatarFallback>{item.userId.userName[0] + item.userId.userName[1]}</AvatarFallback>
                     </Avatar>
                 </div>
@@ -133,13 +137,29 @@ const Card = ({ item, index, likePost, commentOnPost, setCommentText,showDelete 
                     <div><h1 className='font-medium'>{item.userId.userName}</h1></div>
                     <div><h1 className='text-sm text-gray-600 font-medium'>{calculateDays()}</h1></div>
                 </div>
-                {showDelete && <h1 className='absolute right-0 top-0'><LuTrash className='text-red-600 cursor-pointer'/></h1>}
+                {deletePost && <h1 className='absolute right-0 top-0'><AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <LuTrash className='text-red-600 cursor-pointer' />
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete this post from your account.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel className='bg-[#1e40af] text-white hover:text-white hover:bg-[#1e40afcc]'>Cancel</AlertDialogCancel>
+                            <AlertDialogAction className='bg-[#e40000] hover:bg-[#e4000096]' onClick={() => deletePost(item._id, index)}>Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog></h1>}
             </div>
             {item.content && <div className='text-start mb-2 px-1 text-gray-600'>
                 <h1 className='text-[15px]'>{item.content}</h1>
             </div>}
             {item.media && <div className='w-full bg-gray-200 rounded-xl flex justify-center items-center mb-2'>
-                <img src={item.media} alt="" />
+                <img src={item.media.url} alt="" />
             </div>}
             <div className='flex justify-between mb-2 items-center'>
                 <div className='flex justify-start ps-2 gap-x-1 items-center'>

@@ -38,7 +38,9 @@ interface singlePost {
     content: string;
     createdAt: string;
     updatedAt: string;
-    media: string;
+    media: {
+        url: string
+    };
     likes: any[];
     comments: any[];
     __v: number;
@@ -333,6 +335,20 @@ const Page = ({ params, }: { params: Promise<{ id: string }> }) => {
             router.replace('/');
         }
     }
+    const deletePost = async (id: string, index: number) => {
+        console.log(id);
+        console.log(index);
+        try {
+            const {data} = await axios.delete(`/api/v1/post/${id}`,{
+                headers: {
+                    'Authorization' : `Bearer ${accessToken}`
+                }
+            })
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <>
             <Toaster />
@@ -392,7 +408,7 @@ const Page = ({ params, }: { params: Promise<{ id: string }> }) => {
                 </div>
                 <div>
                     {posts.length > 0 ? posts.map((item: singlePost, index: number) => {
-                        return <Card showDelete={true} key={item._id} likePost={likePost} setCommentText={setCommentText} commentOnPost={commentOnPost} index={index} item={item} />
+                        return <Card deletePost={deletePost} showDelete={true} key={item._id} likePost={likePost} setCommentText={setCommentText} commentOnPost={commentOnPost} index={index} item={item} />
                     }) : posts.length === 0 ? <div className='w-full justify-center items-center my-4 flex'><h1>No posts found!</h1></div> : <></>}
                 </div>
                 <div className='h-3 w-full'></div>
