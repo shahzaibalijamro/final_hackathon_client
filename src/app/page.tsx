@@ -38,6 +38,9 @@ interface userState {
   user: {
     user: {
       userName: string
+      profilePicture: {
+        url: string
+      }
     },
   }
 }
@@ -79,6 +82,7 @@ const Home = () => {
     (async () => {
       await getAllPosts()
     })()
+    console.log(process.env.NEXT_PUBLIC_API_URL_DEV, "==>");
   }, [])
   const addPost = async () => {
     if (!accessToken) {
@@ -115,6 +119,9 @@ const Home = () => {
       const { post } = data;
       post.userId = {
         userName: user.userName,
+        profilePicture: {
+          url: user.profilePicture.url
+        }
       }
       setPosts([post,...posts]);
     } catch (error) {
