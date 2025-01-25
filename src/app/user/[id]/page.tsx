@@ -345,8 +345,36 @@ const Page = ({ params, }: { params: Promise<{ id: string }> }) => {
                 }
             })
             console.log(data);
-        } catch (error) {
+            posts.splice(index,1);
+            setPosts([...posts]);
+        } catch (error:any) {
             console.log(error);
+            const errorMsg = error.response?.data?.message;
+            if (errorMsg === "Post not found!") {
+                return toast("Deletion Failed", {
+                    description: "The specified post could not be found. Please check and try again!",
+                    action: {
+                        label: "Retry",
+                        onClick: () => deletePost(id,index),
+                    },
+                });
+            }
+            if (errorMsg === "You are not authorized to delete this post!") {
+                return toast("Deletion Failed", {
+                    description: "You do not have the required permissions to delete this post.",
+                    action: {
+                        label: "Ok",
+                        onClick: () => console.log("ok"),
+                    },
+                });
+            }
+            toast("Something went wrong!", {
+                description: "An error occurred while attempting to delete the post. Please try again later.",
+                action: {
+                    label: "Retry",
+                    onClick: () => deletePost(id,index),
+                },
+            });              
         }
     }
     return (
