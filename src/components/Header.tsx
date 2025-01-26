@@ -38,23 +38,23 @@ const Header = () => {
     const removeUserAndRedirect = useRemoveUser();
     const user = useSelector((state: userState) => state.user.user);
     console.log(user);
-    const getTokens = async () => {
-        try {
-            const { data } = await axios.post("/api/v1/auth");
-            console.log(data);
-            dispatch(setAccessToken({ token: data.accessToken }));
-            dispatch(setUser({ user: data.user }));
-            setIsLoaded(true)
-        } catch (error) {
-            console.log(error);
-            setIsLoaded(true);
-        }
-    }
-    useEffect(() => {
-        if (!accessToken) {
-            getTokens();
-        }
-    }, [])
+    // const getTokens = async () => {
+    //     try {
+    //         const { data } = await axios.post("/api/v1/auth");
+    //         console.log(data);
+    //         dispatch(setAccessToken({ token: data.accessToken }));
+    //         dispatch(setUser({ user: data.user }));
+    //         setIsLoaded(true)
+    //     } catch (error) {
+    //         console.log(error);
+    //         setIsLoaded(true);
+    //     }
+    // }
+    // useEffect(() => {
+    //     if (!accessToken) {
+    //         getTokens();
+    //     }
+    // }, [])
     const logOutUser = async () => {
         try {
             const { data } = await axios.post("/api/v1/logout");
@@ -77,7 +77,7 @@ const Header = () => {
     return (
         <div className='w-full bg-[#1e40af] flex justify-between px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-4 items-center lg:py-3 lg:px-4 xl:px-5 xl:py-3'>
             <Link href={"/"}>
-                <h1 className='text-xl text-white font-normal'>Social App</h1>
+                <h1 className='text-xl text-white font-normal'>Saylani Microfinance App</h1>
             </Link>
             <div className='flex justify-center items-center gap-x-2'>
                 {isLoaded && accessToken && user && <DropdownMenu modal={false}>
